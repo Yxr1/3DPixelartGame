@@ -33,6 +33,13 @@ public class playerController : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
+        //Healthcheck
+        if(currentHealth <= 0){
+            horizontalInput = 0;
+            verticalInput = 0;
+            Debug.LogWarning("NO HEALTH");
+        }
+
         // Check if the player is grounded
         if (controller.isGrounded)
         {
@@ -53,8 +60,7 @@ public class playerController : MonoBehaviour
 
         //testing for EXP
         if (Input.GetKeyDown(KeyCode.T)){
-                EXP++;
-                Debug.Log("YOU GAINED EXP");
+                decreaseHealth(50);
         }
 
         // Apply gravity to the movement direction
@@ -78,5 +84,9 @@ public class playerController : MonoBehaviour
     private void DodgeCooldownReset(){
         isDodging = false;
         Debug.Log("RESET DODGE COOLDOWN");
+    }
+
+    private void decreaseHealth(float amount){
+        currentHealth -= amount;
     }
 }
