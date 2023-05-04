@@ -18,10 +18,17 @@ public class playerController : MonoBehaviour
 
     public float maxHealth = 100;
     public float currentHealth = 80;
-    public float EXP = 0;
-    public float playerLevel = 1;
     public Text healthText;
     public Text EXPText;
+
+    //XP Variables
+    public float exp = 0f;
+    public float xpLevel = 10f;
+    private float xp_a = 0.25f;
+    private float xp_b = 2f;
+    private float xp_c = -1.5f;
+    private float xp_d = 1.5f;
+    private float needed_xp;
 
     void Start()
     {
@@ -60,7 +67,7 @@ public class playerController : MonoBehaviour
 
         //testing for EXP
         if (Input.GetKeyDown(KeyCode.T)){
-                decreaseHealth(50);
+            exp++;
         }
 
         // Apply gravity to the movement direction
@@ -68,12 +75,14 @@ public class playerController : MonoBehaviour
 
         // Move the player using the character controller component
         controller.Move(moveDirection * Time.deltaTime);
+
         UpdateUI();
+        CheckEXP();
     }
 
     private void UpdateUI(){
         healthText.text = "Health: " + currentHealth.ToString() + " / " + maxHealth.ToString();
-        EXPText.text = "EXP: " + EXP.ToString();
+        EXPText.text = "EXP: " + exp.ToString() + "/" + getNeededXP().ToString();
     }
 
     private void DodgeResetSpeed(){
@@ -88,5 +97,21 @@ public class playerController : MonoBehaviour
 
     private void decreaseHealth(float amount){
         currentHealth -= amount;
+    }
+
+    private float getNeededXP(){
+        float needed_xp = Mathf.Pow(xp_a * (xp_b * xpLevel + xp_c), xp_d);
+        needed_xp = Mathf.Floor((float)needed_xp);
+        if(needed_xp <= 0){
+            needed_xp = 1;
+        }
+        return needed_xp;
+    }
+
+    private void CheckEXP(){
+        if(exp >= getNeededXP()){
+            xpLevel++;
+            exp = 0;
+        }
     }
 }
